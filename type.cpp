@@ -1,48 +1,26 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 class Solution
 {
 public:
-    bool halvesAreAlike(string s)
+    int minFallingPathSum(vector<vector<int>> &matrix)
     {
-        int n = s.size();
-        int i = 0;
-        int j = n - 1;
-        int left = 0, right = 0;
+        int sz = matrix.size();
 
-        while (i < j)
+        vector<int> temp1(sz, 0), temp2(sz, 0);
+        for (int r = 0; r < sz; r++)
         {
-            if (s[i] == 'a' || s[i] == 'e' || s[i] == 'i' || s[i] == 'o' || s[i] == 'u' || s[i] == 'A' || s[i] == 'E' || s[i] == 'I' || s[i] == 'O' || s[i] == 'U')
+            for (int c = 0; c < sz; c++)
             {
-                left++;
+                int left = ((c - 1) >= 0) ? temp1[c - 1] : INT_MAX;
+                int middle = temp1[c];
+                int right = ((c + 1) < sz) ? temp1[c + 1] : INT_MAX;
+                temp2[c] = matrix[r][c] + min({left, middle, right});
             }
-
-            if (s[j] == 'a' || s[j] == 'e' || s[j] == 'i' || s[j] == 'o' || s[j] == 'u' || s[j] == 'A' || s[j] == 'E' || s[j] == 'I' || s[j] == 'O' || s[j] == 'U')
-            {
-                right++;
-            }
-
-            i++;
-            j--;
+            swap(temp1, temp2);
         }
 
-        if (left == right)
-        {
-            return true;
-
-            return false;
-        }
+        int ans = INT_MAX;
+        for (auto &sum : temp1)
+            ans = min(ans, sum);
+        return ans;
     }
 };
-
-int main()
-{
-
-    for (int i = 1; i <= 10; i++)
-    {
-        cout << i << endl;
-    }
-
-    return 0;
-}
