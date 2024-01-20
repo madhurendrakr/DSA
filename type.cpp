@@ -1,26 +1,70 @@
 class Solution
 {
-public:
-    int minFallingPathSum(vector<vector<int>> &matrix)
+private:
+    vector<int> nextSmallerElement(vector<int> arr, int n)
     {
-        int sz = matrix.size();
+        stack<int> s;
+        s.push(-1);
+        vector<int> ans(n);
 
-        vector<int> temp1(sz, 0), temp2(sz, 0);
-        for (int r = 0; r < sz; r++)
+        for (int i = n - 1; i >= 0; i--)
         {
-            for (int c = 0; c < sz; c++)
+            int curr = arr[i];
+            while (s.top() != -1 && arr[s.top()] >= curr)
             {
-                int left = ((c - 1) >= 0) ? temp1[c - 1] : INT_MAX;
-                int middle = temp1[c];
-                int right = ((c + 1) < sz) ? temp1[c + 1] : INT_MAX;
-                temp2[c] = matrix[r][c] + min({left, middle, right});
+                s.pop();
             }
-            swap(temp1, temp2);
+            // ans is stack ka top
+            ans[i] = s.top();
+            s.push(i);
         }
-
-        int ans = INT_MAX;
-        for (auto &sum : temp1)
-            ans = min(ans, sum);
         return ans;
+    }
+
+    vector<int> prevSmallerElement(vector<int> arr, int n)
+    {
+        stack<int> s;
+        s.push(-1);
+        vector<int> ans(n);
+
+        for (int i = 0; i < n; i++)
+        {
+            int curr = arr[i];
+            while (s.top() != -1 && arr[s.top()] >= curr)
+            {
+                s.pop();
+            }
+            // ans is stack ka top
+            ans[i] = s.top();
+            s.push(i);
+        }
+        return ans;
+    }
+
+public:
+    int largestRectangleArea(vector<int> &heights)
+    {
+        int n = heights.size();
+
+        vector<int> next(n);
+        next = nextSmallerElement(heights, n);
+
+        vector<int> prev(n);
+        prev = prevSmallerElement(heights, n);
+
+        int area = INT_MIN;
+        for (int i = 0; i < n; i++)
+        {
+            int l = heights[i];
+
+            if (next[i] == -1)
+            {
+                next[i] = n;
+            }
+            int b = next[i] - prev[i] - 1;
+            int newArea = l * b;
+            area = max(area, newArea);
+        }
+        return area;
     }
 };
