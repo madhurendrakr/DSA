@@ -23,4 +23,6 @@ public:
         int res = (int)(num % mod);
         return res;
     }
-};
+}
+
+
