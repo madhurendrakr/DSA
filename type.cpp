@@ -1,25 +1,24 @@
 class Solution
 {
 public:
-    vector<int> findErrorNums(vector<int> &nums)
+    int dfs(int i, vector<string> &arr, vector<int> vec)
     {
-        unordered_set<int> mp;
-        vector<int> ans;
-
-        for (auto num : nums)
+        if (i == arr.size())
+            return 0;
+        int skip = dfs(i + 1, arr, vec);
+        for (char c : arr[i])
         {
-            if (mp.count(num))
-            {
-                ans.push_back(num);
-            }
-            mp.insert(num);
+            if (vec[c - 'a'])
+                return skip;
+            vec[c - 'a'] = 1;
         }
-        for (int num = 1; num <= nums.size(); num++)
-        {
-            if (!mp.count(num))
-                ans.push_back(num);
-        }
+        int temp = arr[i].length() + dfs(i + 1, arr, vec);
+        return max(skip, temp);
+    }
 
-        return ans;
+    int maxLength(vector<string> &arr)
+    {
+        vector<int> vec(26, 0);
+        return dfs(0, arr, vec);
     }
 };
