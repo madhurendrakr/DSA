@@ -1,27 +1,29 @@
+
 class Solution {
 public:
-       
-     int mod = 1e9 + 7;
-    map<vector<int>, int> temp;
+       int mod=1e9+7;
+    int kInversePairs(int n, int k) {
+         vector<vector<int>> temp(n+1,vector<int>(k+1,0));
+        temp[0][0]=1;
+        for(int i=1;i<=n;i++)
+        {
+            long long data=0;
+            for(int j=0;j<=k;j++)
+            {
+               
+                data+=temp[i-1][j];
 
-    long long dfs(int startRow, int startColumn, int m, int n, int mm){
-        if(mm == 0)
-            return (startRow < 0 || startColumn < 0 || startRow >= m || startColumn >= n);
-        if(startRow < 0 || startColumn < 0 || startRow >= m || startColumn >= n) 
-            return 1;
 
-        if(temp.count({startRow, startColumn, mm})) return temp[{startRow, startColumn, mm}];
-        return temp[{startRow, startColumn, mm}] = (long long)(
-            (dfs(startRow-1, startColumn, m, n, mm-1)%mod)+
-            (dfs(startRow+1, startColumn, m, n, mm-1)%mod)+
-            (dfs(startRow, startColumn-1, m, n, mm-1)%mod)+
-            (dfs(startRow, startColumn+1, m, n, mm-1)%mod)
-        ) % mod;
-    }
+                if(j>=i)
+                {
+                    data=data-temp[i-1][j-i];
+                }
 
-    int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
-        int  ans = dfs(startRow, startColumn, m, n, maxMove)%mod;
+               
+                temp[i][j]=(data%mod);
+            }
+        }
 
-        return ans ;
+        return temp[n][k];
     }
 };
