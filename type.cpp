@@ -1,29 +1,59 @@
-class Solution
+class MyQueue
 {
 public:
-    int numSubmatrixSumTarget(vector<vector<int>> &matrix, int target)
+    stack<int> st1, st2;
+    MyQueue()
     {
-        int ans = 0;
-        int m = matrix.size(), n = matrix[0].size();
-        for (int i = 0; i < m; i++)
-            for (int j = 1; j < n; j++)
-                matrix[i][j] += matrix[i][j - 1];
+    }
+    void push(int x)
+    {
+        st1.push(x);
+    }
 
-        unordered_map<int, int> track;
-        for (int i = 0; i < n; i++)
+    int pop()
+    {
+        while (st1.size() > 1)
         {
-            for (int j = i; j < n; j++)
-            {
-                track = {{0, 1}};
-                int cur = 0;
-                for (int k = 0; k < m; k++)
-                {
-                    cur += matrix[k][j] - (i > 0 ? matrix[k][i - 1] : 0);
-                    ans += track.find(cur - target) != track.end() ? track[cur - target] : 0;
-                    track[cur]++;
-                }
-            }
+            st2.push(st1.top());
+            st1.pop();
         }
-        return ans;
+        int val = st1.top();
+        st1.pop();
+        while (!st2.empty())
+        {
+            st1.push(st2.top());
+            st2.pop();
+        }
+        return val;
+    }
+
+    int peek()
+    {
+        while (st1.size() > 1)
+        {
+            st2.push(st1.top());
+            st1.pop();
+        }
+        int val = st1.top();
+        while (!st2.empty())
+        {
+            st1.push(st2.top());
+            st2.pop();
+        }
+        return val;
+    }
+
+    bool empty()
+    {
+        return st1.empty();
     }
 };
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue* obj = new MyQueue();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->peek();
+ * bool param_4 = obj->empty();
+ */
